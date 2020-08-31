@@ -122,12 +122,34 @@ graph = Graph()
 # use DFT function to create a graphed map of the 'world'
 rooms_dft = graph.dft(player.current_room)
 # Extract all room id's into a list
-rooms_list_dft = [room_id for room_id in rooms_dft.keys()]
+rooms_list_dft = [id for id in rooms_dft.keys()]
 
 
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
 traversal_path = []
+
+while(len(rooms_list_dft) > 1):
+    # set current position
+    curr_room = rooms_list_dft[0]
+    next_room = rooms_list_dft[1]
+    curr_room_neighbors = rooms_dft[curr_room]
+    # if they are a neighbor, add to path
+    if next_room in curr_room_neighbors.keys():
+        traversal_path.append(curr_room_neighbors[next_room])
+    else:
+        # if they're not a neighbor, then we need to use BFS to find shortest path
+        shortest_path = graph.bfs(curr_room, next_room)
+        while len(shortest_path) > 1:
+            curr_room_neighbors = rooms_dft[shortest_path[0]]
+            next_room = shortest_path[1]
+            # if they are neighbor, add to traversal_path
+            if next_room in curr_room_neighbors.keys():
+                traversal_path.append(curr_room_neighbors[next_room])
+            else:
+                traversal_path.append('?')
+            shortest_path.pop(0)
+    rooms_list_dft.pop(0)
 
 
 # TRAVERSAL TEST - DO NOT MODIFY
